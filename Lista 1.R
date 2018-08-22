@@ -30,6 +30,11 @@ pl(p=0.5)
 #mais próximo de p=0.5 -> maior bimodalidade
 
 #3.12
+rmgp = function(n, a, b) {
+  rgamma(n, a, b) %>% rpois(n, .)
+}
+
+rmgp(1000, 4, 2) %>% hist()
 
 
 
