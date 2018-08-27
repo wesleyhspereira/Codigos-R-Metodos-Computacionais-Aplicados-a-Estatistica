@@ -1,3 +1,44 @@
+########### Aula 1 - Ex 3 ##########
+#3.11
+set.seed(10)
+################
+rmixp = function(n, p) {
+  u = rbinom(n, prob = p, size=1)
+  x = rnorm(n)
+  y = rnorm(n, 3, 1)
+  c(x[u==1], y[u==0])
+}
+
+dmixp = function(x, p) {
+  p*dnorm(x) + (1-p)*dnorm(x, 3, 1)
+}
+
+
+pl = function(p, n=1000) {
+  amostra = rmixp(n, p)
+  x = seq(min(amostra)-1, max(amostra)+1, 0.001)
+  hist(amostra, freq = F, main="Histrograma da amostra simulada")
+  lines(x, dmixp(x, p), col='red')
+  
+}
+
+
+pl(p=0.75)
+pl(p=0.6)
+pl(p=0.5)
+
+#mais próximo de p=0.5 -> maior bimodalidade
+
+#3.12
+rmgp = function(n, a, b) {
+  rgamma(n, a, b) %>% rpois(n, .)
+}
+
+rmgp(1000, 4, 2) %>% hist()
+
+
+
+
 ########### Aula 1 - Ex 4 ##########
 
 fross4.2 = function(q)
