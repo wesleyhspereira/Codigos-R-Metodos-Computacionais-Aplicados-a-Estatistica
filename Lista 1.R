@@ -1,3 +1,45 @@
+########### Aula 1 - Ex 1 ##########
+f = function(x) exp(x + x^2)
+integrate(f, lower = -2, upper = 2)
+
+#3.3 exp(x + x^2) entre -2 e 2
+
+#função transformada
+h = function(y) {
+  x = 4*y - 2
+  exp(x + x^2)
+} 
+
+#integral
+4*mean(h(runif(10000)))
+
+#3.7 exp(-x^2) entre -inf e inf
+
+#função transformada
+h = function(y) {
+  x = -log((1-y)/y)
+  
+  exp(-(x)^2)*((1+exp(-x))^2)/exp(-x)
+  
+}
+
+mean(h(runif(10000)))
+
+#3.9 exp(-x-y) 0 < y < x, 0 < x < inf
+
+#função transformada
+h = function(k, l) {
+  x = l/(1-l)
+  y = k*x
+  
+  exp(-(x+y))*x*(1+x)^2
+}
+
+mean(h(runif(100000), runif(100000)))
+
+
+#
+
 ########### Aula 1 - Ex 3 ##########
 #3.11
 set.seed(10)
