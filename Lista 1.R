@@ -1,6 +1,4 @@
 ########### Aula 1 - Ex 1 ##########
-f = function(x) exp(x + x^2)
-integrate(f, lower = -2, upper = 2)
 
 #3.3 exp(x + x^2) entre -2 e 2
 
