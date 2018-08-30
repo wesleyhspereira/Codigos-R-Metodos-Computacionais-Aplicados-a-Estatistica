@@ -154,3 +154,29 @@ rmultimix = function(n,p)
   return(x)
 }
 
+
+########### Aula 1 - Ex 6 ##########
+
+
+
+#minha g será uma t com df baixo, para ter uma calda mais pesada
+
+#densidade da skew normal 
+dskew = function(x, ep, w, a) {
+  (2/w)*dnorm((x-ep)/w)*pnorm(a*((x-ep)/w))
+}
+
+#usando SIR 
+rskew = function(n, ep, w, a, m) {
+  
+  g = function(x, ep) dnorm(x, ep, sd=100)
+  y = rnorm(m, mean = ep, sd=100)
+  w = (dskew(y, ep=0, w=2, a=6)/g(y, ep=0))/sum((dskew(y, ep=0, w=2, a=6)/g(y, ep=0)))
+  sample(y, size=n, prob = w, replace = T) 
+  
+  
+}
+
+
+
+
