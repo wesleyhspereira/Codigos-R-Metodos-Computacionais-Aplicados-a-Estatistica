@@ -1,3 +1,4 @@
+library(magrittr)
 ########### Aula 1 - Ex 1 ##########
 
 #3.3 exp(x + x^2) entre -2 e 2
@@ -181,9 +182,9 @@ erg = function(x) cumsum(x)/(1:length(x))
 
 
 set.seed(10)
-n = 100000
-burn = 1000
-sigma2 = 20
+n = 300000
+burn = 100000
+sigma2 = 7
 #declarando x 
 x = numeric(length = n)
 #g( |X ) será normal(X, 100)
@@ -231,6 +232,8 @@ data.frame(real, simulado)
 plot(real, simulado)
 abline(a=0, b=1)
 
+hist(amostra, freq = FALSE)
+lines(seq(min(amostra), max(amostra), 0.001), dcauchy(seq(min(amostra), max(amostra), 0.001)))
 
 ###### 9.4 #######
 
@@ -311,10 +314,7 @@ cad2[,2] %>% erg() %>% plot(type='l') #média ergódiga
 
 #f(x|y) = c(y)exp(-xy), em que c(y) = y/(1-exp(-By)), x|y ~ exp(y)I(0<x<B)
 #f(y|x) = c(x)exp(-xy), em que c(x) = x/(1-exp(-Bx)), y|x ~ exp(x)I(0<y<B)
-#assumindo a priori B ~ exp(lambda)
-
-
-#f(B|x, y) é exp(lambda)I(B>x+y)
+#f é fixo
 
 
 #exponencial truncada em (0, B)
@@ -322,32 +322,33 @@ rtexp = function(n, lambda, B) {
   u = runif(n)
   qexp(u*pexp(B, rate=lambda), rate=lambda) %>% return()
 }
-#exponencial truncada em (x+y, Inf)
-rtexpup = function(n, lambda, x, y) {
-  u = runif(n)
-  qexp(u*exp(-lambda*(x+y))+pexp(x+y,lambda), lambda)
-}
 
-init = list(x=4, y=3, B=6)
-n = 10000
-x = numeric(n); x[1] = init$x
-y = numeric(n); y[1] = init$y
-B = numeric(n); B[1] = init$B
 
-for(i in 2:n) {
-  x[i] = rtexp(1, y[i-1], B[i-1])
-  y[i] = rtexp(1, x[i-1], B[i-1])
-  B[i] = rtexpup(1, 1/4, x[i-1], y[i-1])
-}
+xyr = function(n, init = list(x=1, y=1), B) {
 
+  x = numeric(n); x[1] = init$x
+  y = numeric(n); y[1] = init$y
+  
+  for(i in 2:n) {
+    x[i] = rtexp(1, y[i-1], B)
+    y[i] = rtexp(1, x[i-1], B)
+  }
+  return(cbind("x"=x,"y"=y))
+} 
+
+
+amostra = xyr(10000, B=4)
+x = amostra[,1]
+y = amostra[, 2]
+#cmédia ergódiga da cadeia
 plot(erg(x), type='l')
 plot(erg(y), type='l')
 plot(erg(B), type='l')
 
-burn = 1000
-x = x[-c(1:1000)]
-y = y[-c(1:1000)]
-B = B[-c(1:1000)]
+#burn-in
+burn = 5000
+x = x[-c(1:burn)]
+y = y[-c(1:burn)]
 
 #E[x]
 mean(x)
@@ -383,9 +384,9 @@ plot(erg(y), type='l') #y
 plot(erg(z), type='l') #z
 
 burn = 1000
-x = x[-c(1:1000)]
-y = y[-c(1:1000)]
-z = z[-c(1:1000)]
+x = x[-c(1:burn)]
+y = y[-c(1:burn)]
+z = z[-c(1:burn)]
 
 #E[XYZ]
 mean(x*y*z)
@@ -404,11 +405,10 @@ rweibull.slice = function(n, a, b) {
   x
 }
 
-x = rweibull.slice(1000, 4, 3)
-hist(x)
+x = rweibull.slice(1000, 10, 2)
 
 hist(x, freq = F)
-lines(seq(0, max(x), 0.001), dweibull(seq(0, max(x), 0.001), 4, 3))
+lines(seq(0, max(x), 0.001), dweibull(seq(0, max(x), 0.001), 10, 2))
 
 
 ########### Aula 2 - Ex 4 ##########
@@ -447,9 +447,9 @@ ftnorm = function(n, mu, sigma, a, b) {
 
 
 #exemplo
-hist(ftnorm(1000, mu=4, sigma=1, a=1, b=7), freq = F)
-lines(seq(1, 7, 0.001), dtnorm(seq(1, 7, 0.001), 
-                               mu=4, sigma=1, a=1, b=7))
+hist(ftnorm(1000, mu=4, sigma=1, a=3, b=5), freq = F)
+lines(seq(3, 5, 0.001), dtnorm(seq(3, 5, 0.001), 
+                               mu=4, sigma=1, a=3, b=5))
 
 
 
